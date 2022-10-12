@@ -3,8 +3,24 @@
 }
 
 h2 {
+  color: black;
+  font-size: 2rem;
+  text-align: center;
+}
+
+h3 {
   color: blue;
-  text-decoration: underline;
+  font-size: 2rem;
+  text-align: center;
+/*  text-decoration: underline; */
+}
+
+h4 {
+  color: blue;
+  font-size: 2rem;
+  text-align: center;
+  background-color: yellow;
+/*  text-decoration: underline; */
 }
 
 a {
