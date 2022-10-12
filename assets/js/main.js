@@ -26,6 +26,8 @@ function condiciones(
   this.detalle = detalle; // Detalle del trabajo
 }
 
+var cantidadConsultas = [0,0,0];
+
 var trabajoProgramador = new condiciones(0, 0, 0, 0, 0, 0, 0, 0, "Indefinido");
 var trabajoElectricista = new condiciones(0, 0, 0, 0, 0, 0, 0, 0, "Indefinido");
 var trabajoAsistencia = new condiciones(0, 0, 0, 0, 0, 0, 0, 0, "Indefinido");
@@ -89,28 +91,11 @@ function formatearSiNo(entradaSiNo) {
   return entradaSiNo;
 }
 
-function copia(datosGeneral, datos) {
-  datos.datosGeneral;
-
-  datos.trabajo = datosGeneraltrabajo;
-  datos.cantidad = datosGeneralcantidad;
-  datos.opcionTiempo = datosGeneralopcionTiempo;
-  datos.dias = datosGeneraldias;
-  datos.precio = datosGeneralprecio;
-  datos.herramientas = datosGeneralherramientas;
-  datos.costo = datosGeneralcosto;
-  datos.horas = datosGeneralhoras;
-  datos.trabajoString = datosGeneraltrabajoString;
-  datos.detalle = datosGeneraldetalle;
-
-  return datos;
-}
-
-function calculoTotal(programador, electricista, asistencia) {
+function calculoTotal(programador, electricista, asistencia, general) {
   let total = new condiciones(0, 0, 0, 0, 0, 0, 0, 0, "Indefinido");
 
   total.costo = programador.costo + electricista.costo + asistencia.costo;
-  total.detalle = programador.detalle;
+  total.detalle = general.detalle;
 
   return total;
 }
@@ -133,97 +118,96 @@ do {
 
   trabajoGeneral.precio = costoHora(trabajoGeneral.trabajo);
 
+  do {
+    if (trabajoGeneral.trabajo == 1) {
+      trabajoGeneral.herramientas = String(
+        prompt("Llevar computadora propia?")
+      );
+    } else if (trabajoGeneral.trabajo == 2) {
+      trabajoGeneral.herramientas = String(
+        prompt("Llevar herramientas propias?")
+      );
+    } else if (trabajoGeneral.trabajo == 3) {
+      alert("No se asiste con herramientas ni computadora");
+      trabajoGeneral.herramientas = "no";
+    }
+
+    trabajoGeneral.herramientas = formatearSiNo(trabajoGeneral.herramientas);
+  } while (
+    trabajoGeneral.herramientas != "Si" &&
+    trabajoGeneral.herramientas != "No"
+  );
+
+  if (trabajoGeneral.herramientas == "Si") {
+    trabajoGeneral.precio = trabajoGeneral.precio * 1.25;
+  }
+
+  if (trabajoGeneral.trabajo != 4) {
     do {
-      if (trabajoGeneral.trabajo == 1) {
-        trabajoGeneral.herramientas = String(
-          prompt("Llevar computadora propia?")
-        );
-      } else if (trabajoGeneral.trabajo == 2) {
-        trabajoGeneral.herramientas = String(
-          prompt("Llevar herramientas propias?")
-        );
-      } else if (trabajoGeneral.trabajo == 3) {
-        alert("No se asiste con herramientas ni computadora");
-        trabajoGeneral.herramientas = "no";
-      }
+      trabajoGeneral.cantidad = Number(
+        prompt("Cantidad de personas que necesita: ", 0)
+      );
+    } while (controlarNumero(trabajoGeneral.cantidad));
+    do {
+      trabajoGeneral.opcionTiempo = Number(
+        prompt("Tiempo que necesitara es en: 1-dias, 2-meses", 0)
+      );
+    } while (controlarNumero(trabajoGeneral.opcionTiempo, 1, 2));
 
-      trabajoGeneral.herramientas = formatearSiNo(trabajoGeneral.herramientas);
-    } while (
-      trabajoGeneral.herramientas != "Si" &&
-      trabajoGeneral.herramientas != "No"
-    );
+    if (trabajoGeneral.opcionTiempo == 1) {
+      do {
+        trabajoGeneral.dias = Number(
+          prompt("Cantidad de dias que necesitara el personal: ", 0)
+        );
+      } while (controlarNumero(trabajoGeneral.dias));
+    } else if (trabajoGeneral.opcionTiempo == 2) {
+      do {
+        trabajoGeneral.dias = Number(
+          prompt("Cantidad de meses que necesitara el personal: ", 0)
+        );
+      } while (controlarNumero(trabajoGeneral.dias));
 
-    if (trabajoGeneral.herramientas == "Si") {
-      trabajoGeneral.precio = trabajoGeneral.precio * 1.25;
+      trabajoGeneral.dias = trabajoGeneral.dias * 24;
     }
 
-    if (trabajoGeneral.trabajo != 4) {
-      do {
-        trabajoGeneral.cantidad = Number(
-          prompt("Cantidad de personas que necesita: ", 0)
-        );
-      } while (controlarNumero(trabajoGeneral.cantidad));
-      do {
-        trabajoGeneral.opcionTiempo = Number(
-          prompt("Tiempo que necesitara es en: 1-dias, 2-meses", 0)
-        );
-      } while (controlarNumero(trabajoGeneral.opcionTiempo, 1, 2));
+    do {
+      trabajoGeneral.horas = Number(
+        prompt("Horas diarias de la jornada laboral promedio", 0)
+      );
+    } while (controlarNumero(trabajoGeneral.horas));
 
-      if (trabajoGeneral.opcionTiempo == 1) {
-        do {
-          trabajoGeneral.dias = Number(
-            prompt("Cantidad de dias que necesitara el personal: ", 0)
-          );
-        } while (controlarNumero(trabajoGeneral.dias));
-      } else if (trabajoGeneral.opcionTiempo == 2) {
-        do {
-          trabajoGeneral.dias = Number(
-            prompt("Cantidad de meses que necesitara el personal: ", 0)
-          );
-        } while (controlarNumero(trabajoGeneral.dias));
+    trabajoGeneral.costo =
+      trabajoGeneral.dias *
+      trabajoGeneral.precio *
+      trabajoGeneral.cantidad *
+      trabajoGeneral.horas;
 
-        trabajoGeneral.dias = trabajoGeneral.dias * 24;
-      }
+    alert("Costo total: USD " + trabajoGeneral.costo);
+  }
 
-      do {
-        trabajoGeneral.horas = Number(
-          prompt("Horas diarias de la jornada laboral promedio", 0)
-        );
-      } while (controlarNumero(trabajoGeneral.horas));
-
-      trabajoGeneral.costo =
-        trabajoGeneral.dias *
-        trabajoGeneral.precio *
-        trabajoGeneral.cantidad *
-        trabajoGeneral.horas;
-
-      alert("Costo total: USD " + trabajoGeneral.costo);
-    }
-
+  if (trabajoGeneral.trabajo != 4) {
     console.log("Costo total " + trabajoGeneral.costo);
 
     document.write(
-      "<p>El costo total de " + trabajoGeneral.trabajoString + " es de: USD " + trabajoGeneral.costo + "</p>"
+      "<p>El costo total de " +
+        trabajoGeneral.trabajoString +
+        " es de: USD " +
+        trabajoGeneral.costo +
+        "</p>"
     );
+  }
 
-    if (trabajoGeneral.trabajo === 1) {
-      trabajoProgramador.detalle = trabajoGeneral.detalle;
-      trabajoProgramador.costo =
-        trabajoProgramador.costo + trabajoGeneral.costo;
-    } else if (trabajoGeneral.trabajo === 2) {
-      trabajoElectricista.detalle = trabajoGeneral.detalle;
-      trabajoElectricista.costo =
-        trabajoElectricista.costo + trabajoGeneral.costo;
+  if (trabajoGeneral.trabajo === 1) {
+    trabajoProgramador.costo = trabajoProgramador.costo + trabajoGeneral.costo;
+    cantidadConsultas[0]++;
+  } else if (trabajoGeneral.trabajo === 2) {
+    trabajoElectricista.costo =
+      trabajoElectricista.costo + trabajoGeneral.costo;
+      cantidadConsultas[1]++;
     } else if (trabajoGeneral.trabajo === 3) {
-      trabajoAsistencia.detalle = trabajoGeneral.detalle;
-      trabajoAsistencia.costo = trabajoAsistencia.costo + trabajoGeneral.costo;
-    }
-
-  trabajoTotal = calculoTotal(
-    trabajoProgramador,
-    trabajoElectricista,
-    trabajoAsistencia
-  );
+    trabajoAsistencia.costo = trabajoAsistencia.costo + trabajoGeneral.costo;
+    cantidadConsultas[2]++;
+  }
 
   do {
     otraObra = prompt(String("Desea agregar mas personal a la cotizacion?"));
@@ -238,8 +222,19 @@ do {
   }
 } while (otraObraSi);
 
+trabajoTotal = calculoTotal(
+  trabajoProgramador,
+  trabajoElectricista,
+  trabajoAsistencia,
+  trabajoGeneral
+);
+
 console.log("Codigo de obra: " + trabajoTotal.detalle);
 console.log("Costo total " + trabajoTotal.costo);
+console.log("Cantidad de veces que se agrego Programadores:", cantidadConsultas[0]);
+console.log("Cantidad de veces que se agrego Electricistas:", cantidadConsultas[1]);
+console.log("Cantidad de veces que se agrego Asistencia tecnica:", cantidadConsultas[2]);
+
 
 document.write("<h2>Resultado:</h2>");
 document.write("<h3>Codigo de obra: " + trabajoTotal.detalle + "</h3>");
